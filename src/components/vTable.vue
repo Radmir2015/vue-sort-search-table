@@ -11,28 +11,33 @@
       </p>
     </div>
     <div class="v-table__body">
-      <div class="body__row" v-for="(row, rowIndex) in paginatedRows" :key="rowIndex">
-        <div
-          :class="['row', `row-${header.name}`]"
-          v-for="(header, headerIndex) in headers"
-          :key="headerIndex"
-          :style="basisStyle"
-        >
-          {{ getByPath(row, header.path) }}
-        </div>
-      </div>
+      <v-table-row
+        v-for="(row, rowIndex) in paginatedRows"
+        :key="rowIndex"
+        :basisStyle="basisStyle"
+        :headers="headers"
+        :row="row"
+      />
     </div>
     <div class="v-table__pagination">
-      <div :class="{'page': true, 'page__selected': page === currentPage }" v-for="page in pages" :key="page" @click="currentPage = page">
-        {{ page }}
-      </div>
+      <v-page v-if="currentPage > 1" @click="currentPage = 1">{{ 1 }}</v-page>
+      <v-page v-if="currentPage > 2" @click="currentPage--">{{ currentPage - 1 }}</v-page>
+      <v-page :selected="true" @click="currentPage">{{ currentPage }}</v-page>
+      <v-page v-if="currentPage < pages - 1" @click="currentPage++">{{ currentPage + 1 }}</v-page>
+      <v-page v-if="currentPage < pages" @click="currentPage = pages">{{ pages }}</v-page>
     </div>
   </div>
 </template>
 
 <script>
+import vTableRow from './vTableRow'
+import vPage from './vPage'
+
 export default {
   name: 'v-table',
+  components: {
+    vPage, vTableRow
+  },
   props: {
     headers: {
       type: Array,
@@ -92,30 +97,11 @@ export default {
   .v-table__header p {
     text-align: left;
   }
-  .body__row {
-    display: flex;
-    justify-content: space-around;
-    margin: 15px 0;
-  }
-  .row {
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  
   .v-table__pagination {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     margin-top: 30px;
-  }
-  .page {
-    padding: 8px;
-    margin-right: 10px;
-    border: solid 1px #ccc;
-  }
-  .page__selected, .page:hover {
-    background: #aeaeae;
-    cursor: pointer;
   }
 </style>
