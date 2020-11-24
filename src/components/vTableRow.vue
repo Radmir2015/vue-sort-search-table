@@ -6,6 +6,7 @@
       :key="headerIndex"
       :style="basisStyle"
       :title="getByPath(row, header.path)"
+      @click="$emit('click')"
     >
       {{ getByPath(row, header.path) }}
     </div>
@@ -17,8 +18,8 @@ export default {
   name: 'v-table-row',
   props: {
     basisStyle: {
-      type: String,
-      default: ''
+      type: Object,
+      default: () => {}
     },
     headers: {
       type: Array,

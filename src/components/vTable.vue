@@ -17,14 +17,15 @@
         :basisStyle="basisStyle"
         :headers="headers"
         :row="row"
+        @click="showModal(row)"
       />
     </div>
     <div class="v-table__pagination">
-      <v-page v-if="currentPage > 1" @click="currentPage = 1">{{ 1 }}</v-page>
+      <v-page v-if="currentPage > 1" @click="currentPage = 1">First</v-page>
       <v-page v-if="currentPage > 2" @click="currentPage--">{{ currentPage - 1 }}</v-page>
       <v-page :selected="true" @click="currentPage">{{ currentPage }}</v-page>
       <v-page v-if="currentPage < pages - 1" @click="currentPage++">{{ currentPage + 1 }}</v-page>
-      <v-page v-if="currentPage < pages" @click="currentPage = pages">{{ pages }}</v-page>
+      <v-page v-if="currentPage < pages" @click="currentPage = pages">Last</v-page>
     </div>
   </div>
 </template>
@@ -78,6 +79,9 @@ export default {
                ? +a - +b
                : a.localeCompare(b)
       })
+    },
+    showModal(row) {
+      alert(JSON.stringify(row))
     }
   }
 }
