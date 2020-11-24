@@ -24,7 +24,7 @@
         :basisStyle="basisStyle"
         :headers="headers"
         :row="row"
-        @click="showModal(row)"
+        @click="$emit('show-modal', row)"
       />
     </div>
     <div class="v-table__pagination">
@@ -100,9 +100,6 @@ export default {
                ? +a - +b
                : a.localeCompare(b)
       })
-    },
-    showModal(row) {
-      alert(JSON.stringify(row))
     }
   },
   mounted() {

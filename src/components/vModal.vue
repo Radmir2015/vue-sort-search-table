@@ -1,26 +1,50 @@
 <template>
-  <div class="v-modal">
-    <div class="v-modal__header">
-      <span></span>
-      <span></span>
-    </div>
-    <div class="v-modal__content">
-      <slot></slot>
-    </div>
-    <div class="v-modal__footer">
-      <button></button><button></button>
+  <div class="modal_wrapper" @click.self="$emit('close-modal')">
+    <div class="v-modal">
+      <div class="v-modal__header">
+        <span><b>Table row information</b></span>
+        <span>
+          <i
+            class="material-icons closeButton"
+            @click="$emit('close-modal')"
+          >
+            close
+          </i>
+        </span>
+      </div>
+      <div class="v-modal__content">
+        <slot></slot>
+      </div>
+      <div class="v-modal__footer">
+        <slot name="footer"></slot>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'v-modal'
+  name: 'v-modal',
+  data: () => ({
+    wrapperClick: false,
+  })
 }
 </script>
 
 <style>
+  .modal_wrapper {
+    background: rgba(64, 64, 64, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+  }
   .v-modal {
+    z-index: 1;
     padding: 16px;
     position: fixed;
     top: 50px;
@@ -34,8 +58,9 @@ export default {
     align-items: center;
   }
   .v-modal__content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    text-align: left;
+  }
+  .closeButton {
+    cursor: pointer;
   }
 </style>
