@@ -1,5 +1,6 @@
 <template>
   <div class="v-table">
+    <v-search @search-text="filterData" />
     <div class="v-table__header">
       <p
         v-for="(header, headerIndex) in headers"
@@ -25,6 +26,7 @@
         :headers="headers"
         :row="row"
         @click="$emit('show-modal', row)"
+        :searchQuery="searchQuery"
       />
     </div>
     <div class="v-table__pagination">
@@ -40,11 +42,12 @@
 <script>
 import vTableRow from './vTableRow'
 import vPage from './vPage'
+import vSearch from './vSearch.vue'
 
 export default {
   name: 'v-table',
   components: {
-    vPage, vTableRow
+    vPage, vTableRow, vSearch
   },
   props: {
     headers: {
@@ -65,13 +68,14 @@ export default {
     sortedData: [],
     hoverHeaders: [],
     sortDirections: [],
+    searchQuery: '',
   }),
   computed: {
     basisStyle() {
       return { 'flexBasis': 100 / this.headers.length + '%' }
     },
     pages() {
-      return Math.ceil(this.data.length / this.perPage)
+      return Math.ceil(this[this.sortedData.length ? 'sortedData' : 'data'].length / this.perPage)
     },
     paginatedRows() {
       return this[this.sortedData.length ? 'sortedData' : 'data'].slice((this.currentPage - 1) * this.perPage, this.currentPage * this.perPage)
@@ -82,11 +86,14 @@ export default {
       return path.split('.').reduce((a, b) => a[b], row)
     },
     sortBy(headerIndex) {
+      this.currentPage = 1
       this.sortDirections[headerIndex] = parseInt((this.sortDirections[headerIndex] - 2) ** this.sortDirections[headerIndex])
       this.sortDirections = this.sortDirections.map((x, i) => i !== headerIndex ? 0 : x)
       // or f = n => (1 - ((n + 2) % 3 % 2)) * (-1) ** +!((n + 2) % 3)
 
-      this.sortedData = [...this.data]
+      // possible improvement: caching filteredData
+      if (this.sortedData.length >= this.data.length || this.sortedData.length === 0)
+        this.sortedData = [...this.data]
 
       if (this.sortDirections[headerIndex] === 0) return 
 
@@ -100,6 +107,24 @@ export default {
                ? +a - +b
                : a.localeCompare(b)
       })
+    },
+    filterData(text) {
+      this.searchQuery = text
+      this.currentPage = 1
+
+      if (text.length === 0) {
+        this.sortedData = this.data
+        return
+      }
+      console.log(text)
+
+      this.sortedData = this.data
+        .filter(row =>
+          this.headers
+            .some(header =>
+              this.getByPath(row, header.path)
+                .toLowerCase()
+                .includes(text.toLowerCase())))
     }
   },
   mounted() {

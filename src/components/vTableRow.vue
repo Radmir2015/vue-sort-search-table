@@ -7,8 +7,8 @@
       :style="basisStyle"
       :title="getByPath(row, header.path)"
       @click="$emit('click')"
+      v-html="$options.filters.highlight(getByPath(row, header.path), searchQuery)"
     >
-      {{ getByPath(row, header.path) }}
     </div>
   </div>
 </template>
@@ -28,6 +28,10 @@ export default {
     row: {
       type: Object,
       default: () => {}
+    },
+    searchQuery: {
+      type: String,
+      default: ''
     }
   },
   methods: {
@@ -55,5 +59,8 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  .highlight {
+    background-color: yellow;
   }
 </style>
