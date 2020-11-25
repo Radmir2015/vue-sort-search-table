@@ -2,7 +2,7 @@
   <div class="modal_wrapper" @click.self="$emit('close-modal')">
     <div class="v-modal">
       <div class="v-modal__header">
-        <span><b>Table row information</b></span>
+        <span><slot name="header"></slot></span>
         <span>
           <i
             class="material-icons closeButton"
@@ -59,6 +59,8 @@ export default {
   }
   .v-modal__content {
     text-align: left;
+    margin-top: 5px;
+    margin-bottom: 10px;
   }
   .closeButton {
     cursor: pointer;
